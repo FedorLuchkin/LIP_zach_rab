@@ -1,0 +1,94 @@
+<p id="notice"><%= notice %></p>
+
+<div class="row  sticky-top mt-4 col-md-12" style="top: 90px">
+  <h1 class="alert alert bg-warning text-dark col-md-5" style="height: 80px"> <%= t('tasks.index_subj.head') %> </h1>
+
+  <% if user_signed_in? %>
+    <%= link_to "#{t('.new_task')}", new_task_path, class: 'btn btn-success btn-lg col-md-S ml-4 text-lg-center', style: 'height: 80px; width: 310px' %>
+    <% activity_btn = '' %>
+  <% else %>
+    <p class="col-md-6"></p>
+    <p class="alert alert bg-dark text-warning col-md-6"><b><%= t('.login_to') %></b></p>
+    <% activity_btn = 'disabled' %>
+  <% end %>
+</div>
+
+<table class="table table-hover mb-4 col-md-8">
+
+  <tbody>
+
+  <% num = 0 %>
+  <% subj = '' %>
+  <% @tasks.each do |task| %>
+
+        <% if (task.deadline - Date.today) <0 %>
+          <% color = '#000000' %>
+        <% else %>
+          <% if (task.deadline - Date.today) <=3  %>
+            <% color = '#b60800' %>
+          <% else %>
+            <% if (task.deadline - Date.today) <= 10 %>
+              <% color = '#ff842b' %>
+            <% else %>
+              <% color = '#00b200' %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+      <% if task.subj == subj %>
+        <% if task.status == false %>
+          <tr class="task">
+            <th scope="row"><p class="" style="color:<%= color %>"><%= num += 1%></p></th>
+            <td><pre class="" style="color:<%= color %>"> <%= task.descript %></pre></td>
+            <td class="action text-center"><p class="" style="color:<%= color %>"><%= task.deadline %></p></td>
+            <td><%= link_to "#{t('.show')}", task, class: 'action btn btn-light btn-sm ml-3' %></td>
+            <td><%= link_to "#{t('.edit')}", edit_task_path(task), class: "btn btn-outline-warning btn-sm #{activity_btn}" %></td>
+            <td><%= link_to "#{t('.delete')}", task, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-danger btn-sm #{activity_btn}" %></td>
+            <td><%= link_to "#{t('.done')}", complete_in_subj_task_path(task), data: {method: :put}, class: "btn btn-outline-info btn-sm ml-4 #{activity_btn}" %></td>
+          </tr>
+      <% else %>
+        <tr class="task">
+          <th scope="row"><p style="color:#1f39fb"><%= num += 1%></p></th>
+          <td><pre style="color:#1f39fb"><s><%= task.descript %></s></pre></td>
+          <td class="action "><p style="color:#1f39fb"><s><%= task.deadline %></s></p></td>
+          <td><%= link_to "#{t('.show')}", task, class: 'action btn btn-light btn-sm ml-3' %></td>
+          <td><%= link_to "#{t('.edit')}", edit_task_path(task), class: "btn btn-outline-warning btn-sm #{activity_btn}" %></td>
+          <td><%= link_to "#{t('.delete')}", task, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-danger btn-sm #{activity_btn}" %></td>
+          <td><%= link_to "#{t('.not_done')}", uncomplete_in_subj_task_path(task), data: {method: :put}, class: "btn btn-outline-info btn-sm ml-4 #{activity_btn}" %></td>
+        </tr>
+      <% end %>
+        <% else %>
+          <% num = 0 %>
+          <% subj = task.subj %>
+
+            <tr class="bg" style="top: 50px; background-color:rgba(200,160,0,0.11)">
+              <td colspan="7" class="alert-warning bg-warning text-dark text-center font-weight-bolder font-italic">
+                <%= subj  %>
+              </td>
+            </tr>
+            <% if task.status == false %>
+            <tr class="task">
+              <th scope="row"><p class="" style="color:<%= color %>"><%= num += 1%></p></th>
+              <td><pre class="" style="color:<%= color %>"> <%= task.descript %></pre></td>
+              <td class="action text-center"><p class="" style="color:<%= color %>"><%= task.deadline %></p></td>
+              <td><%= link_to "#{t('.show')}", task, class: 'action btn btn-light btn-sm ml-3' %></td>
+              <td><%= link_to "#{t('.edit')}", edit_task_path(task), class: "btn btn-outline-warning btn-sm #{activity_btn}" %></td>
+              <td><%= link_to "#{t('.delete')}", task, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-danger btn-sm #{activity_btn}" %></td>
+              <td><%= link_to "#{t('.done')}", complete_in_subj_task_path(task), data: {method: :put}, class: "btn btn-outline-info btn-sm ml-4 #{activity_btn}" %></td>
+            </tr>
+          <% else %>
+            <tr class="task">
+              <th scope="row"><p style="color:#1f39fb"><%= num += 1%></p></th>
+              <td><pre style="color:#1f39fb"><s><%= task.descript %></s></pre></td>
+              <td class="action "><p style="color:#1f39fb"><s><%= task.deadline %></s></p></td>
+              <td><%= link_to "#{t('.show')}", task, class: 'action btn btn-light btn-sm ml-3' %></td>
+              <td><%= link_to "#{t('.edit')}", edit_task_path(task), class: "btn btn-outline-warning btn-sm #{activity_btn}" %></td>
+              <td><%= link_to "#{t('.delete')}", task, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-danger btn-sm #{activity_btn}" %></td>
+              <td><%= link_to "#{t('.not_done')}", uncomplete_in_subj_task_path(task), data: {method: :put}, class: "btn btn-outline-info btn-sm ml-4 #{activity_btn}" %></td>
+            </tr>
+          <% end %>
+        <% end %>
+
+  <% end %>
+  </tbody>
+</table>
